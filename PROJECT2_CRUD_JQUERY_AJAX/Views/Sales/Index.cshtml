@@ -1,0 +1,169 @@
+﻿@model IEnumerable<PROJECT2_CRUD_JQUERY_AJAX.Models.SalesViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/KO_SalesScript.js"></script>
+<script src="~/Scripts/Moment.js"></script>
+
+<h2>Sales</h2>
+<div class="container" style="margin-top:3%">
+    <a href="#" class="btn btn-primary" data-bind="click: AddNewSales"> Add New Sales</a> <br> <br />
+    <table class="table">
+        <tr>
+            <th>
+                DateSold
+            </th>
+            <th>
+                CustomerName
+            </th>
+            <th>
+                ProductName
+            </th>
+            <th>
+                StoreName
+            </th>
+            <th>
+            </th>
+        </tr>
+
+        <tbody data-bind="foreach: Sales" id="salesview">
+            <tr>
+                <td data-bind="text: ID" class="hidden"></td>
+                <td data-bind="text: moment(DateSold).format('DD/MM/YYYY')"></td>
+                <td data-bind="text: CustomerName"></td>
+                <td data-bind="text: ProductName"></td>
+                <td data-bind="text: StoreName"></td>
+                <td>
+                    <a data-bind="click: $parent.EditSales" class='btn btn-warning'><span class='glyphicon glyphicon-edit'></span></a>
+                    <a data-bind="click:$parent.DeletedSales" class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    @*for designing "ADDNewsaleList" popup modal with bootstrap classes*@
+
+    <div class="modal fade" id="MySales">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle">Sales</h4>
+                </div>
+                <div class="modal-body" >
+                    <form id="formSales">
+                        <div class="form-group">
+                            <!-- Date input -->
+                            <input class="form-control" type="date" placeholder="DateSold*" data-bind="value: SelectedDateSold"/>
+                        </div>
+                        <div class="form-group">
+                            <select data-bind="options: AllCustomers,optionsText: 'Name', optionsValue: 'ID', value: SelectedCustomer"></select>
+                        </div>
+                        <div class="form-group">
+                            <select data-bind="options: AllProducts,optionsText: 'Name', optionsValue: 'ID', value: SelectedProduct"> </select>
+                        </div>
+                        <div class="form-group">
+                            <select data-bind="options: AllStores, optionsText:'Name',optionsValue: 'ID', value: SelectedStore"></select>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/loader.gif" width="250" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="reset" data-bind="click: AllNewSalesRecord" value="Submit" class="btn btn-success" id="btnSubmit" />
+                </div>
+
+            </div>>
+        </div>
+    </div>
+    @*for designing "EditsaleList" popup modal with bootstrap classes*@
+    <div class="modal fade" id="MyEditSales">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalEditTitle">Sales</h4>
+                </div>
+                <div class="modal-body" data-bind="with: SelectedSales">
+                    <div class="form-group">
+                        <!-- Date input -->
+                        <input class="form-control" type="text" data-bind="textInput: DateSold, value: moment(DateSold).format('L')" placeholder="DateSold*" />
+                    </div>
+                    <div class="form-group">
+                        <select data-bind="options: $parent.AllCustomers,optionsText: 'Name', optionsValue: 'ID', value: CustomerID"></select>
+                    </div>
+                    <div class="form-group">
+                        <select data-bind="options: $parent.AllProducts,optionsText: 'Name', optionsValue: 'ID', value: ProductID"> </select>
+                    </div>
+                    <div class="form-group">
+                        <select data-bind="options: $parent.AllStores, optionsText:'Name',optionsValue: 'ID', value: StoreID"></select>
+                    </div>
+                </div>
+                <div style="text-align:center;display:none" id="loaderDiv">
+                    <img src="~/Content/loader.gif" width="250" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="reset" data-bind="click: SaveSales" value="Save" class="btn btn-success" id="btnSubmit" />
+                </div>
+            </div>>
+        </div>
+    </div>
+    @*for designing "DeletesaleList" popup modal with bootstrap classes*@
+    <div class="modal fade" id="MyDeleteSales">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Delete Sales</h4>
+                </div>
+                <div class="modal-body" data-bind="with: SelectedSales">
+
+
+                    <dl class="dl-horizontal">
+                        <dt>
+                            <label>DateSold</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text:moment(DateSold).format('DD/MM/YYYY')"></label>
+                        </dd>
+                        <dt>
+                            <label>Customer Name</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text:CustomerName"></label>
+                        </dd>
+                        <dt>
+                            <label>Store Name</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text:StoreName"></label>
+                        </dd>
+                        <dt>
+                            <label>ProductName</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text:ProductName"></label>
+                        </dd>
+                    </dl>
+                    @*for displaying the loading windows, by default the style has to be set as display:none*@
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                        <input type="submit" data-bind="click:$root.DeleteSalesRecord" value="Delete" class="btn btn-success" id="btnSubmit" />
+                    </div>
+                </div>
+            </div>>
+        </div>
+    </div>
+</div>

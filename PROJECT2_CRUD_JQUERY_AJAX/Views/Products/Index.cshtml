@@ -1,0 +1,127 @@
+﻿@model IEnumerable<PROJECT2_CRUD_JQUERY_AJAX.Models.ProductViewModel>
+
+@{
+    ViewBag.Title = "Index";
+
+}
+@section styles {
+    <style>
+        .errorStyle {
+            background-color: red;
+        }
+    </style>
+    }
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/knockout.validation.js"></script>
+<script src="~/Scripts/KO_ProductScript.js"></script>
+<h2>Products</h2>
+<div class="container" style="margin-top:3%">
+    <a href="#" class="btn btn-primary" data-bind="click: AddProduct" data-toggle="modal"> Add New Product</a> <br> <br />
+
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+        <tbody data-bind="foreach: Products" id="productview">
+            <tr>
+                <td data-bind="text: ID" class="hidden"></td>
+                <td data-bind="text: Name"></td>
+                <td data-bind="text: Price"></td>
+                <td>
+                    <a data-bind="click: $parent.EditProduct" class='btn btn-warning'><span class='glyphicon glyphicon-edit'></span></a>
+                    <a data-bind="click:$parent.ShowDeletedProduct" class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="modal fade" id="MyProduct">
+        <div class="modal-dialog">
+            <div class="modal-content"   data-bind="with: SelectedProduct">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle">Product</h4>
+                </div>
+                <div class="modal-body" id="newproductsection">
+                    @*for adding the table columns in the form of textbox to the popup using html.textbox*@
+
+                    <input class="form-control" type="text" data-bind="value: Name" placeholder="Name*" />
+                    <input class="form-control" type="text" data-bind="value: Price" placeholder="Price*" />
+
+                    <div style="text-align:center;display:none" id="loaderDiv">
+                        <img src="~/Content/loader.gif" width="250" />
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                        <input type="button" data-bind="click: $parent.AddNewProductRecord, enable: CanSave" value="Create" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyProductEdit">
+        <div class="modal-dialog">
+            <div class="modal-content"  data-bind="with: SelectedProduct">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Product Edit</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input class="form-control" type="text" data-bind="value: Name" placeholder="Name*" />
+                    <input class="form-control" type="text" data-bind="value: Price" placeholder="Price*" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="button" data-bind="click: $parent.SaveProduct, enable: CanSave" value="Save" class="btn btn-success" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyProductDelete">
+        <div class="modal-dialog">
+            <div class="modal-content"  data-bind="with: SelectedProduct">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Product Delete</h4>
+                    <label id="errorMessageText"></label>
+                </div>
+                <div class="modal-body">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            <label>Name</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text: Name"></label>
+                        </dd>
+                        <dt>
+                            <label>Price</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text: Price"></label>
+                        </dd>
+                    </dl>
+                </div>
+                @*for displaying the loading windows, by default the style has to be set as display:none*@
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="submit" data-bind="click: $parent.DeleteProduct, enable: CanSave" value="Delete" id="deleteProduct" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,112 @@
+﻿@model IEnumerable<PROJECT2_CRUD_JQUERY_AJAX.Models.Store>
+
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script src="~/Scripts/KO_StoreScript.js"></script>
+
+
+<h2>Store</h2>
+<div class="container" style="margin-top:3%">
+    <a href="#" class="btn btn-primary" data-target="#MyStore" data-toggle="modal"> Add New Store</a> <br> <br />
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Address
+            </th>
+            <th></th>
+        </tr>
+        <tbody data-bind="foreach: Stores" id="storeview">
+            <tr>
+                <td data-bind="text: ID" class="hidden"></td>
+                <td data-bind="text: Name"></td>
+                <td data-bind="text: Address"></td>
+                <td>
+                    <a data-bind="click: $parent.EditStore" class='btn btn-warning'><span class='glyphicon glyphicon-edit'></span></a>
+                    <a data-bind="click:$parent.ShowDeletedStore" class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    @*for designing the popup modal with bootstrap classes*@
+    <div class="modal fade" id="MyStore">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4 id="ModalTitle">Store</h4>
+                </div>
+                <div class="modal-body" id="newstoresection">
+                    <input class="form-control" type="text" data-bind="value: storeViewModel.Name" name="Name" id="Name" placeholder="Name*" />
+                    <input class="form-control" type="text" data-bind="value: storeViewModel.Address" name="Address" id="Address" placeholder="Address*" />
+                    <div style="text-align:center;display:none" id="loaderDiv">
+                        <img src="~/Content/loader.gif" width="250" />
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                        <input type="reset" data-bind="click:AddNewStoreRecord" value="Create" class="btn btn-success" id="btnSaveStore" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyStoreEdit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Store Edit</h4>
+                </div>
+                <div class="modal-body" data-bind="with: SelectedStore">
+
+                    <input class="form-control" type="text" data-bind="value: Name" placeholder="Name*" />
+                    <input class="form-control" type="text" data-bind="value: Address" placeholder="Address*" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="button" data-bind="click:SaveStore" value="Save" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="MyStoreDelete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                    <h4>Store Delete</h4>
+                    <label id="errorMessageText"></label>
+                </div>
+
+                <div class="modal-body" data-bind="with:SelectedStore">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            <label>Name</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text: Name"></label>
+                        </dd>
+                        <dt>
+                            <label>Address</label>
+                        </dt>
+                        <dd>
+                            <label data-bind="text: Address"></label>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <input type="submit" data-bind="click: DeletedStore" value="Delete" class="btn btn-success" id="btnDeleteStore" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
