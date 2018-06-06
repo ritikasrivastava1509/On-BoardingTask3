@@ -40,7 +40,7 @@
                 <td data-bind="text: Price"></td>
                 <td>
                     <a data-bind="click: $parent.EditProduct" class='btn btn-warning'><span class='glyphicon glyphicon-edit'></span></a>
-                    <a data-bind="click:$parent.ShowDeletedProduct" class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a>
+                    <a data-bind="click: $parent.ShowDeletedProduct" class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span></a>
                 </td>
             </tr>
         </tbody>
@@ -116,7 +116,7 @@
                 @*for displaying the loading windows, by default the style has to be set as display:none*@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
-                    <input type="submit" data-bind="click: $parent.DeleteProduct, enable: CanSave" value="Delete" id="deleteProduct" class="btn btn-success" />
+                    <input type="submit" data-bind="click: $parent.DeleteProduct" value="Delete" id="deleteProduct" class="btn btn-success" />
                 </div>
             </div>
         </div>

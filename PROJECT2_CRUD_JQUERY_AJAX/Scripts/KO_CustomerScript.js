@@ -1,21 +1,48 @@
 ﻿$(function () {
+
+    ko.validation.init({
+        registerExtenders: true,
+        messagesOnModified: true,
+        insertMessages: true,
+        parseInputAttributes: true,
+        errorClass: 'errorStyle',
+        messageTemplate: null
+
+    }, true);
     var model = new modelView();
-    ko.applyBindings(model);
     model.viewCustomer();
+    ko.applyBindings(model);
+
+
 });
 
-function customerViewModel() {
+function customerViewModel(data) {
     var that = this;
-    that.ID = ko.observable();
-    that.Name = ko.observable();
-    that.Address = ko.observable();
+    that.ID = ko.observable(data.ID);
+    that.Name = ko.observable(data.Name).extend({ required: true, minLength: 2, maxLength: 10 });
+    that.Address = ko.observable(data.Address).extend({ required: true, minLength: 2, maxLength: 50 });
+    that.validationErrors = ko.validation.group(that);
+    that.CanSave = ko.computed(function () {
+        that.validationErrors.showAllMessages();
+        return that.errors().length === 0;
+    }, this
+    );
+
+
 }
+
+var emptyCustomer = {
+    ID: 0,
+    Name: '',
+    Address: ''
+}
+
 function modelView() {
     var self = this;
-    self.customerViewModel = new customerViewModel();
     self.Customers = ko.observableArray([]);
     self.SelectedCustomer = ko.observable();
     self.CustomerExist = ko.observable();
+    self.errors = ko.validation.group(self);
     //Details
     self.viewCustomer = function () {
 
@@ -39,8 +66,9 @@ function modelView() {
     };
     //Create
     self.AddNewCustomerRecord = function () {
-        try {
-            var jsondata = ko.toJSON(self);
+        if (self.errors().length === 0) {
+            try {
+                var jsondata = ko.toJSON(self.SelectedCustomer());
             $.ajax({
                 url: '/Customers/CreateCustomer',
                 type: 'POST',
@@ -57,12 +85,23 @@ function modelView() {
             });
         } catch (e) {
             window.location.href = '/Customers/Index';
+            }
+        }
+        else {
+
+            self.errors.showAllMessages();
         }
     };
+
+//Add Function
+self.AddCustomer = function (data) {
+    self.SelectedCustomer(new customerViewModel(emptyCustomer));
+    $("#MyCustomer").modal();
+}
     //Update Function
 
     self.EditCustomer = function (data) {
-        self.SelectedCustomer(data);
+        self.SelectedCustomer(new customerViewModel(data));
         $("#MyCustomerEdit").modal();
     }
 
@@ -87,8 +126,8 @@ function modelView() {
     };
     //Delete
     self.ShowDeletedCustomer = function (data) {
-        
-        self.SelectedCustomer(data);
+
+        self.SelectedCustomer(new customerViewModel(data));
         $("#errorMessageText").text("")
         $("#deleteCustomer").prop('disabled', false)
         $("#MyCustomerDelete").modal();
@@ -130,5 +169,5 @@ function modelView() {
             }
         });
     }
-    
+
 };

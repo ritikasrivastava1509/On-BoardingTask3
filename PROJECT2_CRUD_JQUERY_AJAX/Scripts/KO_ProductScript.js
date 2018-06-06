@@ -45,6 +45,7 @@ function modelView() {
     self.SelectedProduct = ko.observable();
     self.ProductExist = ko.observable();
     self.errors = ko.validation.group(self);
+    
 
     //Create
     self.AddNewProductRecord = function () {
@@ -127,10 +128,12 @@ function modelView() {
     };
     //show delete item
     self.ShowDeletedProduct = function (data) {
-        self.SelectedProduct(data);
+        
+        $("#MyProductDelete").modal();
+        self.SelectedProduct(new productViewModel(data));
         $("#errorMessageText").text("")
         $("#deleteProduct").prop('disabled', false)
-        $("#MyProductDelete").modal();
+        
         var jsondata = ko.toJSON(self.SelectedProduct());
         $.ajax({
             type: "POST",
